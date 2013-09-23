@@ -3,8 +3,13 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
-	<classpathentry kind="lib" path="D:/android_workspace/SGolfBooking/libs/gson-2.2.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Administrator/git/sgolf_app/SGolfBooking/libs/android-support-v4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Administrator/git/sgolf_app/SGolfBooking/libs/gson-2.2.4.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Administrator/git/sgolf_app/SGolfBooking/libs/jackson-core-asl-1.8.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Administrator/git/sgolf_app/SGolfBooking/libs/jackson-mapper-asl-1.8.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Administrator/git/sgolf_app/SGolfBooking/libs/spring-android-core-1.0.0.M3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Administrator/git/sgolf_app/SGolfBooking/libs/spring-android-rest-template-1.0.0.M3.jar"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

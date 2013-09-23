@@ -38,33 +38,44 @@ import com.google.gson.reflect.TypeToken;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.app.Activity;
+import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.ProviderInfo;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
-public class MainActivity extends Activity implements OnClickListener {
+public class MainActivity extends ListActivity implements OnClickListener {
 	
 	//public static final String URL = "http://175.115.238.81:8080/sgolf/home.do";
-	EditText edtText111;
-	TextView textView2;
-	TextView hand_phone_no;
-	TextView booking_status;
-	TextView player_count;
-	TextView leftright_gubn;
-	TextView booking_date_time;
-	TextView game_kind;
+	//EditText edtText111;
+	//TextView textView2;
+	//TextView hand_phone_no;
+	//TextView booking_status;
+	//TextView player_count;
+	//TextView leftright_gubn;
+	//TextView booking_date_time;
+	//TextView game_kind;
 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		String list;
+		List readList = new ArrayList<BookingVO>();
 		// Create a new RestTemplate instance
 		//RestTemplate restTemplate = new RestTemplate();
 		
@@ -74,29 +85,82 @@ public class MainActivity extends Activity implements OnClickListener {
 		// Instantiate the HTTP GET request, expecting an array of
 		// Product objects in response
 		
-		
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+//		setContentView(R.layout.activity_main);
+//		
+//		TelephonyManager telManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE); 
+//		String phoneNum = telManager.getLine1Number();		
+//		
+//		//휴대폰 전화번호 가져오기
+//		EditText edtPlayerCount = (EditText) this.findViewById(R.id.EdtPlayerCount);
+//		//EditText edtText111 = (EditText) this.findViewById(R.id.EdtPlayerCount);
+//		//textView2 = (TextView) this.findViewById(R.id.hand_phone_no);
+//		hand_phone_no = (TextView) this.findViewById(R.id.hand_phone_no);
+//		booking_status = (TextView) this.findViewById(R.id.booking_status);
+//		player_count = (TextView) this.findViewById(R.id.player_count);
+//		leftright_gubn = (TextView) this.findViewById(R.id.leftright_gubn);
+//		booking_date_time = (TextView) this.findViewById(R.id.booking_date_time);
+//		game_kind = (TextView) this.findViewById(R.id.game_kind);
+//
+//		edtPlayerCount.setText(phoneNum);
+//		
+//		Button b1 = (Button) this.findViewById(R.id.btnRegister);
+//		b1.setOnClickListener(this);	
 		
-		TelephonyManager telManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE); 
-		String phoneNum = telManager.getLine1Number();		
+        setContentView(R.layout.activity_cp_list);
+        
+		//List<ProviderInfo> providers = getPackageManager().queryContentProviders(null, 0, 0);
+        int SDK_INT = android.os.Build.VERSION.SDK_INT;
+        if(SDK_INT > 9) {
+        	StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        	StrictMode.setThreadPolicy(policy);
+        }
+        
+		String url = "http://175.115.238.81:8080/sgolf/getBookingList";
 		
-		//휴대폰 전화번호 가져오기
-		EditText edtPlayerCount = (EditText) this.findViewById(R.id.EdtPlayerCount);
-		//EditText edtText111 = (EditText) this.findViewById(R.id.EdtPlayerCount);
-		//textView2 = (TextView) this.findViewById(R.id.hand_phone_no);
-		hand_phone_no = (TextView) this.findViewById(R.id.hand_phone_no);
-		booking_status = (TextView) this.findViewById(R.id.booking_status);
-		player_count = (TextView) this.findViewById(R.id.player_count);
-		leftright_gubn = (TextView) this.findViewById(R.id.leftright_gubn);
-		booking_date_time = (TextView) this.findViewById(R.id.booking_date_time);
-		game_kind = (TextView) this.findViewById(R.id.game_kind);
+		// Create a new RestTemplate instance
+		RestTemplate restTemplate = new RestTemplate();
+		
+		// Add the String message converter
+		restTemplate.getMessageConverters().add(new StringHttpMessageConverter());
+		
+		// Make the HTTP GET request, marshaling the response to a String
+		//String output = restTemplate.getForObject(url,String.class, "SpringSource");
+		list = restTemplate.getForObject(url,String.class);
+		
+		 Type type = new TypeToken<List<BookingVO>>(){}.getType();
+		 List<BookingVO> inpList = new Gson().fromJson(list, type);
+		 
+		 for(int i=0; i<inpList.size(); i++){
+			 BookingVO x = inpList.get(i);
+//			 hand_phone_no.setText(x.getHand_phone_no());
+//			 booking_status.setText(x.getBooking_status());
+//			 player_count.setText(x.getPlayer_count());
+//			 leftright_gubn.setText(x.getLeftright_gubn());
+//			 booking_date_time.setText(x.getBooking_date_time());
+//			 game_kind.setText(x.getGame_kind());
+		 }
+		 
+		ListView lv = (ListView) findViewById(R.id.listView1);
+		String[] lv_arr = {};
+		lv_arr = (String[])inpList.toArray(new String[0]);
+		//ListAdapter adapter = new ArrayAdapter<BookingVO>(this, R.layout.cp_list_item, inpList);
+		lv.setAdapter(new ArrayAdapter<BookingVO>(this, R.layout.cp_list_item, inpList));
+		
 
-		edtPlayerCount.setText(phoneNum);
+		//for (ProviderInfo pi : providers) {
+		//	Log.d(TAG, "Provider " + pi.name);
+		//}
 		
-		Button b1 = (Button) this.findViewById(R.id.btnRegister);
-		b1.setOnClickListener(this);	
 		
+		getListView().setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int pos, long id) {
+//				Toast.makeText(CpListActivity.this, 
+//						"You picked " + ((TextView)view).getText(), 
+//						Toast.LENGTH_LONG).show();
+			}
+		});		
 
 	}
 
@@ -157,14 +221,18 @@ public class MainActivity extends Activity implements OnClickListener {
 				 
 				 for(int i=0; i<inpList.size(); i++){
 					 BookingVO x = inpList.get(i);
-					 hand_phone_no.setText(x.getHand_phone_no());
-					 booking_status.setText(x.getBooking_status());
-					 player_count.setText(x.getPlayer_count());
-					 leftright_gubn.setText(x.getLeftright_gubn());
-					 booking_date_time.setText(x.getBooking_date_time());
-					 game_kind.setText(x.getGame_kind());
+//					 hand_phone_no.setText(x.getHand_phone_no());
+//					 booking_status.setText(x.getBooking_status());
+//					 player_count.setText(x.getPlayer_count());
+//					 leftright_gubn.setText(x.getLeftright_gubn());
+//					 booking_date_time.setText(x.getBooking_date_time());
+//					 game_kind.setText(x.getGame_kind());
 
 				 }
+				 
+//				ListAdapter adapter = new ArrayAdapter<BookingVO>(this, R.layout.cp_list_item, inpList);
+//				setListAdapter(adapter);
+				 
 
 			 } catch(Exception ex) {
 				 ex.printStackTrace();
